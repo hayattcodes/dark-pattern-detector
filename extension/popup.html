@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dark Pattern Detector</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+
+  <div class="header">
+    <h1>🔍 Dark Pattern Detector</h1>
+    <p id="domain">Scanning...</p>
+  </div>
+
+  <div class="score-section">
+    <div class="score-badge" id="scoreBadge">
+      <span id="scoreNumber">--</span>
+      <span class="score-label">/ 10</span>
+    </div>
+    <p id="scoreText">Analyzing page...</p>
+  </div>
+
+  <div class="findings-section">
+    <h2>Patterns Found</h2>
+    <ul id="findingsList">
+      <li class="empty">No patterns detected yet</li>
+    </ul>
+  </div>
+
+  <div class="footer">
+    <button id="viewAll">View Full Report</button>
+    <button id="rescan">Rescan Page</button>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
