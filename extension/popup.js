@@ -1,18 +1,26 @@
-// Popup script - reads findings from background and displays them
-
 document.addEventListener('DOMContentLoaded', () => {
 
-  // Get current tab domain
+  // Domain dikhao
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    const url = new URL(tabs[0].url)
-    document.getElementById('domain').textContent = url.hostname
+    try {
+      const url = new URL(tabs[0].url)
+      document.getElementById('domain').textContent = url.hostname
+    } catch(e) {}
   })
 
-  // Request findings from background
+  // Findings lo
   chrome.runtime.sendMessage({ type: 'GET_FINDINGS' }, (response) => {
     if (response && response.findings) {
       displayFindings(response.findings)
     }
+  })
+
+  // View Full Report button — Side Panel kholo
+  document.getElementById('viewAll').addEventListener('click', () => {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      chrome.sidePanel.open({ tabId: tabs[0].id })
+      window.close()
+    })
   })
 
   // Rescan button
@@ -38,12 +46,10 @@ function displayFindings(findings) {
     return
   }
 
-  // Calculate page score
   const maxSeverity = Math.max(...findings.map(f => f.severity))
   const bonus = Math.floor(Math.log2(findings.length))
   const pageScore = Math.min(10, maxSeverity + bonus)
 
-  // Display score
   scoreNumber.textContent = pageScore
   if (pageScore <= 3) {
     scoreBadge.classList.add('green')
@@ -56,7 +62,6 @@ function displayFindings(findings) {
     scoreText.textContent = 'High manipulation detected!'
   }
 
-  // Display findings list
   list.innerHTML = ''
   findings.slice(0, 5).forEach(finding => {
     const li = document.createElement('li')

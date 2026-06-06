@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head><title>Countdown Timer Test</title></head>
+<body style="font-family:sans-serif;padding:40px;text-align:center">
+
+  <h2>🔥 Flash Sale!</h2>
+  <p style="font-size:18px">50% OFF — Ends in:</p>
+
+  <div id="timer" class="countdown" style="
+    font-size:48px;font-weight:bold;
+    color:#e53935;margin:20px 0">
+    00:10
+  </div>
+
+  <p style="color:gray">Hurry! Limited time offer</p>
+
+  <button style="background:#e53935;color:white;padding:14px 32px;border:none;border-radius:6px;font-size:16px;cursor:pointer;margin-top:20px">
+    Grab Deal Now
+  </button>
+
+  <script>
+    // Fake timer — resets after 0
+    let seconds = 10
+    const timerEl = document.getElementById('timer')
+
+    setInterval(() => {
+      seconds--
+      if (seconds < 0) seconds = 10 // RESET — fake!
+      const mins = Math.floor(seconds / 60).toString().padStart(2, '0')
+      const secs = (seconds % 60).toString().padStart(2, '0')
+      timerEl.textContent = `${mins}:${secs}`
+    }, 1000)
+  </script>
+
+</body>
+</html>

@@ -12,10 +12,14 @@
     "sidePanel"
   ],
 
+  "host_permissions": [
+    "<all_urls>"
+  ],
+
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["content.js"],
+      "js": ["config.js", "content.js"],
       "run_at": "document_idle"
     }
   ],
@@ -25,8 +29,7 @@
   },
 
   "action": {
-  "default_popup": "popup.html"
-
+    "default_popup": "popup.html"
   },
 
   "side_panel": {
@@ -34,10 +37,13 @@
   },
 
   "content_security_policy": {
-    "extension_pages": "script-src 'self' ; object-src 'self'"
+    "extension_pages": "script-src 'self'; object-src 'self'"
   },
 
-  "host_permissions": [
-    "<all_urls>"
+  "web_accessible_resources": [
+    {
+      "resources": ["jspdf.min.js", "sidepanel.js", "sidepanel.html", "config.js"],
+      "matches": ["<all_urls>"]
+    }
   ]
 }
