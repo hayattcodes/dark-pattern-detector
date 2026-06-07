@@ -79,7 +79,7 @@ The extension runs 14 independent detection modules on every page load and DOM m
 
 ### Detection Architecture
 
-**Fake Timer** uses a two-pass behavioral approach — discovery pass on page load, then a 500ms polling interval watching for post-expiry resets. If the timer reaches `00:00` and resets to its original value within 3 seconds, it is flagged with 95% confidence. If the offer text is unchanged after expiry, it flags at 80% confidence. This mirrors the checkout crawler behavioral observation pattern from Mathur et al. 2019.
+**Fake Timer** uses a twopass behavioral approach discovery pass on page load, then a 500ms polling interval watching for post expiry resets. If the timer reaches `00:00` and resets to its original value within 3 seconds, it is flagged with 95% confidence. If the offer text is unchanged after expiry, it flags at 80% confidence. This mirrors the checkout crawler behavioral observation pattern from Mathur et al. 2019.
 
 **Hidden Costs** implements a three-state machine per domain stored in `chrome.storage.local`:
 ```
