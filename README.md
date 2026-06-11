@@ -1,4 +1,4 @@
-# Dark Pattern Detector
+# Lumen - Dark Pattern Detector
 A Chrome extension that detects dark patterns, manipulative UI design, on Indian e-commerce websites in real-time. Built from scratch using vanilla JavaScript, Chrome Extension APIs (Manifest V3), and a rule-based NLP classifier trained on Princeton's labelled dark pattern dataset.
 
 
