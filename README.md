@@ -3,7 +3,9 @@ A Chrome extension that detects dark patterns, manipulative UI design, on Indian
 
 ## 🎥 Demo Video
 
-[![Lumen Demo Video](https://youtube.com)](https://youtu.be)
+## 🎥 Project Demo Video
+
+[![Lumen Demo Video](./thumbnail.jpg)](https://youtu.be)
 
 *📺 Click the image above to watch the full project demo on YouTube!*
 
