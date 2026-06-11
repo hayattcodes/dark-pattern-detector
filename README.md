@@ -1,10 +1,8 @@
 # Dark Pattern Detector
-
-A Chrome extension that detects manipulative UI design called dark patterns on Indian e-commerce websites in real time. Built from scratch using vanilla JavaScript, Chrome Extension APIs (Manifest V3), and a rule based NLP classifier trained on Princeton's labeled dark pattern dataset.
+A Chrome extension that detects dark patterns, manipulative UI design, on Indian e-commerce websites in real-time. Built from scratch using vanilla JavaScript, Chrome Extension APIs (Manifest V3), and a rule-based NLP classifier trained on Princeton's labelled dark pattern dataset.
 
 ## Overview
-
-Dark patterns are interface design choices that trick users into doing things they didn't intend paying hidden fees, accepting cookie tracking, or subscribing to services they never chose. This extension silently scans every page you visit, flags these patterns with visual highlights and tooltips, and generates a manipulation score alongside a downloadable CCPA India 2023 compliance report.
+Dark patterns are design choices in interfaces that trick users into doing things they didn't mean to do, like paying hidden fees, accepting cookie-tracking, or subscribing to services they never opted into. This extension silently scans every page you visit, visually highlights and tooltips these patterns, and generates a manipulation score and downloadable CCPA India 2023 compliance report.
 
 ```
 User visits website
@@ -29,7 +27,6 @@ User visits website
 ```
 
 ## Project Structure
-
 ```
 dark-pattern-detector/
 ├── extension/
@@ -55,7 +52,6 @@ dark-pattern-detector/
 ```
 
 ## Detectors
-
 The extension runs 14 independent detection modules on every page load and DOM mutation.
 
 ### Rule-Based Detectors
@@ -77,33 +73,34 @@ The extension runs 14 independent detection modules on every page load and DOM m
 | Hindi Dark Patterns | India-specific | Devanagari script phrase matching | 5–7 |
 | Third-Party Services | Mathur et al. 2019 | Script source fingerprinting | 6 |
 
-### Detection Architecture
+## Detection Architecture
 
-**Fake Timer** uses a twopass behavioral approach discovery pass on page load, then a 500ms polling interval watching for post expiry resets. If the timer reaches `00:00` and resets to its original value within 3 seconds, it is flagged with 95% confidence. If the offer text is unchanged after expiry, it flags at 80% confidence. This mirrors the checkout crawler behavioral observation pattern from Mathur et al. 2019.
+**Fake Timer** uses a two-pass behavioural discovery pass on page load and then a 500ms polling interval checking for post expiry resets. If the timer reaches 00:00 and resets to the original value within 3 seconds, it is flagged with 95% certainty. If the offer text is unchanged after expiry it flags at 80% confidence. This is similar to the checkout crawler behavioural observation pattern of Mathur et al. 2019.
 
 **Hidden Costs** implements a three-state machine per domain stored in `chrome.storage.local`:
+
 ```
 IDLE → PRICE_OBSERVED (product page) → CHECKOUT → FLAGGED / CLEAR
 ```
-Price is extracted via schema.org `itemprop="price"`, JSON-LD Product markup, then a fallback chain of platform-specific CSS selectors (`.a-price` for Amazon, `.woocommerce-Price-amount` for WooCommerce). A price increase above 5% at checkout that was not disclosed at the product page stage triggers a red alert banner.
 
-**Asymmetric Consent** uses CMP fingerprinting derived from the CookieBlock ETH Zürich consent crawler — recognising OneTrust, Cookiebot, TrustArc, Quantcast, Usercentrics, and Hostinger's custom wrapper by DOM selector. It then maps buttons to ACCEPT_PATH and REJECT_PATH, estimates click depth without clicking, and flags when the depth differential exceeds 2 or when no reject option is visible on the first screen.
+Price is scraped via `schema.org itemprop="price"`, JSON-LD Product markup, then a fallback chain of platform-specific CSS selectors (`.a-price` for Amazon, `.woocommerce-Price-amount` for WooCommerce). A red-alert banner is triggered for a checkout price increase over 5% that was not disclosed at the product-page stage.
 
-**Trick Questions** resolves label text using four methods in order — `for` attribute → wrapping `label` → `aria-labelledby` → `aria-label` — then runs negation token counting and pre-check mismatch detection. Two or more negation signals in a single label trigger a yellow flag with confidence proportional to negation count.
+**Asymmetric Consent** relies on CMP fingerprinting from the CookieBlock ETH Zürich consent crawler: it discovers OneTrust, Cookiebot, TrustArc, Quantcast, Usercentrics, and Hostinger's custom wrapper through DOM selector. Then it assigns buttons to `ACCEPT_PATH` and `REJECT_PATH`, estimates click depth without actually clicking, and flags when the depth differential is >2 or no reject option is visible on the first screen.
 
-**Confirm Shaming** uses a lexical classifier built from Princeton's labeled dataset and Harry Brignull's deceptive.design catalog — covering self-deprecation, financial self-harm framing, knowledge insults, and FOMO framing — applied to all interactive elements under 120 characters.
+**Trick Questions** resolves label text in the following four ways: `for` attribute, wrapping label, `aria-labelledby`, `aria-label`. Then it performs negation token counting and pre-check mismatch detection. If a label contains two or more negation signals, a yellow flag is raised with a confidence level increasing with the number of negations.
 
-**Third-Party Services** checks all `<script src>` attributes and inline script content against 17 known dark pattern service providers documented in Mathur et al. 2019 — including OptinMonster, ProveSource, FOMO, Hurrify, Klaviyo, and others.
+**Confirm Shaming** uses a lexical classifier trained on Princeton's labelled dataset and Harry Brignull's deceptive.design catalogue — self-deprecation, financial self-harm framing, knowledge insults, and FOMO framing — applied to all interactive elements less than 120 characters.
+
+**Third-Party Services** checks `<script src>` attributes and inline script content against 17 known dark pattern service providers from Mathur et al. 2019, including OptinMonster, ProveSource, FOMO, Hurrify, Klaviyo, and others.
 
 ## Severity Scoring
-
 Each finding carries a base severity and a confidence score. The page-level score is:
 
 ```
 page_score = max_finding_severity + floor(log2(finding_count))
 ```
 
-This rewards pages with many patterns without letting low-severity floods overwhelm a single serious finding. A page with one severity-8 finding scores 8. A page with six severity-5 findings scores `5 + floor(log2(6)) = 7`.
+This rewards pages with many patterns without letting low-severity floods overwhelm a single serious finding. A page with one severity-8 finding scores 8. A page with six severity-5 findings scores 5 + floor(log2(6)) = 7.
 
 | Score | Risk Level | Badge Color |
 |---|---|---|
@@ -112,7 +109,6 @@ This rewards pages with many patterns without letting low-severity floods overwh
 | 7–10 | High Manipulation | 🔴 Red |
 
 ## Research Basis
-
 Every detector traces back to a published paper or dataset.
 
 | Component | Source |
@@ -127,7 +123,6 @@ Every detector traces back to a published paper or dataset.
 | CCPA compliance mapping | Central Consumer Protection Authority India, Guidelines 2023 |
 
 ## CCPA India 2023 Coverage
-
 The extension covers 12 of the 13 officially banned dark patterns under India's CCPA Guidelines (30 November 2023).
 
 | Rule | Pattern | Covered |
@@ -148,15 +143,15 @@ The extension covers 12 of the 13 officially banned dark patterns under India's 
 
 ## Features
 
-**Visual Heatmap** — A floating `🗺️ Show Heatmap` button appears on pages where patterns are detected. Clicking it overlays numbered, color-coded markers directly on flagged elements — red for high-severity, yellow for moderate.
+**Visual Heatmap** — Pages where patterns are detected will show a floating 🗺️ Show Heatmap button. Clicking it drops numbered, colour-coded markers right on flagged elements: red for high severity, yellow for moderate.
 
-**PDF Compliance Report** — The side panel generates a downloadable PDF containing the site's risk score, all findings with severity and confidence, CCPA rule violations, and research citations — using jsPDF running entirely in-browser.
+**PDF Compliance Report** — The side panel generates a downloadable PDF that includes the site's risk score, all findings with severity and confidence, CCPA rule violations, and research citations — using jsPDF that runs entirely in-browser.
 
-**Site History Tracking** — The extension records each site visit's score and pattern count in `chrome.storage.local`. The side panel displays the last 5 visits with a trend indicator — whether the site is getting worse, better, or staying the same.
+**Site History Tracking** — The extension keeps track of the score and pattern count for each site visit in `chrome.storage.local`. The side panel shows the last 5 visits with a trend indicator to see if the site is getting worse, better, or staying the same.
 
-**Hindi Language Detection** — Detects dark pattern phrases written in Devanagari script — scarcity claims like `सिर्फ 2 बचे हैं`, urgency phrases like `जल्दी करें`, hidden fees like `सुविधा शुल्क`, and confirm shaming like `नहीं, मुझे बचत नहीं चाहिए`.
+**Hindi Language Detection** — Identifies dark pattern phrases in the Devanagari script — scarcity claims like सिर्फ 2 बचे हैं, urgency phrases like जल्दी करें, hidden fees like सुविधा शुल्क, and confirm shaming like नहीं, मुझे बचत नहीं चाहिए.
 
-**On-Device Processing** — No data leaves the browser. No server calls, no analytics, no tracking.
+**On-Device Processing** — No data leaves your browser. No server calls. No tracking. No analytics.
 
 ## Installation (Developer Mode)
 
@@ -182,18 +177,17 @@ The extension covers 12 of the 13 officially banned dark patterns under India's 
 ```
 
 ## Test Pages
-
-Seven local HTML test pages are included in `extension/test-pages/` — one for each major detector. Load them via `File → Open File` in Chrome after installing the extension.
+Seven local HTML test pages are included in `extension/test-pages/` — one for each major detector. Load them via File → Open File in Chrome after installing the extension.
 
 | File | Tests |
 |---|---|
-| `test-trick.html` | Double negative checkbox, pre-checked opt-out |
-| `test-confirmshaming.html` | Guilt-tripping decline buttons |
-| `test-hiddencost.html` | Product page price baseline |
-| `test-checkout.html` | Hidden fee detection at checkout |
-| `test-consent.html` | Asymmetric accept/reject cookie banner |
-| `test-countdown.html` | Fake timer that resets at zero |
-| `test-nagging.html` | Modal that reappears after dismissal |
+| test-trick.html | Double negative checkbox, pre-checked opt-out |
+| test-confirmshaming.html | Guilt-tripping decline buttons |
+| test-hiddencost.html | Product page price baseline |
+| test-checkout.html | Hidden fee detection at checkout |
+| test-consent.html | Asymmetric accept/reject cookie banner |
+| test-countdown.html | Fake timer that resets at zero |
+| test-nagging.html | Modal that reappears after dismissal |
 
 ## Verified On
 
@@ -206,25 +200,23 @@ Seven local HTML test pages are included in `extension/test-pages/` — one for 
 | makemytrip.com | Basket Sneaking (travel insurance) |
 
 ## Limitations
-
 - Bait and Switch (CCPA Rule 6) is post-purchase and cannot be detected by a browser extension
 - Visual dark patterns (small cancel buttons, low-contrast reject options) require computer vision — not currently implemented
 - NLP confirm shaming classifier is rule-based — a fine-tuned transformer would improve recall on novel phrasing
 - Hindi detector covers common patterns only — regional language coverage is incomplete
 
 ## References
-
-- Mathur, A. et al. (2019). Dark Patterns at Scale: Findings from a Crawl of 11K Shopping Websites. *Princeton University*. https://arxiv.org/abs/1907.07032
-- Gray, C. et al. (2018). The Dark (Patterns) Side of UX Design. *CHI Conference, Cornell*. https://dl.acm.org/doi/10.1145/3173574.3174108
-- Gray, C. et al. (2024). Towards an Ontology of Dark Patterns. *AidUI Unified Taxonomy*.
-- Mathur, A. et al. (2021). What Makes a Dark Pattern Dark? *Princeton*. https://dl.acm.org/doi/10.1145/3411764.3445610
-- Central Consumer Protection Authority. (2023). Guidelines for Prevention and Regulation of Dark Patterns. *Government of India*. https://consumeraffairs.nic.in
-- arxiv.org/abs/2604.02257 — Dark Patterns in Indian Quick Commerce Apps (2026)
-- CookieBlock Consent Crawler — ETH Zürich. https://github.com/dibollinger/CookieBlock
+1. Mathur, A. et al. (2019). Dark Patterns at Scale: Findings from a Crawl of 11K Shopping Websites. Princeton University. https://arxiv.org/abs/1907.07032
+2. Gray, C. et al. (2018). The Dark (Patterns) Side of UX Design. CHI Conference, Cornell. https://dl.acm.org/doi/10.1145/3173574.3174108
+3. Gray, C. et al. (2024). Towards an Ontology of Dark Patterns. AidUI Unified Taxonomy.
+4. Mathur, A. et al. (2021). What Makes a Dark Pattern Dark? Princeton. https://dl.acm.org/doi/10.1145/3411764.3445610
+5. Central Consumer Protection Authority. (2023). Guidelines for Prevention and Regulation of Dark Patterns. Government of India. https://consumeraffairs.nic.in
+6. arxiv.org/abs/2604.02257 — Dark Patterns in Indian Quick Commerce Apps (2026)
+7. CookieBlock Consent Crawler — ETH Zürich. https://github.com/dibollinger/CookieBlock
 
 ## Author
-
-**Hayatt Khan**
-Computer Science and Engineering
-Father Conceicao Rodrigues College of Engineering, Bandra, Mumbai
+**Hayatt Khan**  
+Computer Science and Engineering  
+Father Conceicao Rodrigues College of Engineering, Bandra, Mumbai  
 GitHub: https://github.com/hayattcodes/dark-pattern-detector
+
