@@ -1,6 +1,19 @@
 # Dark Pattern Detector
 A Chrome extension that detects dark patterns, manipulative UI design, on Indian e-commerce websites in real-time. Built from scratch using vanilla JavaScript, Chrome Extension APIs (Manifest V3), and a rule-based NLP classifier trained on Princeton's labelled dark pattern dataset.
-## Youtube Demo Link: https://youtu.be/jNrT7eaRmJw?si=VLumxy-83qaVMb3R
+<!--
+Source - https://stackoverflow.com/q/11804820
+Posted by Tyler Rinker, modified by community. See post 'Timeline' for change history
+Retrieved 2026-06-12, License - CC BY-SA 4.0
+-->
+
+<object width="425" height="350">
+  <param name="movie" value="http://www.youtube.com/user/wwwLoveWatercom?v=BTRN1YETpyg" />
+  <param name="wmode" value="transparent" />
+  <embed src="http://www.youtube.com/user/wwwLoveWatercom?v=BTRN1YETpyg"
+         type="application/x-shockwave-flash"
+         wmode="transparent" width="425" height="350" />
+</object>
+
 
 ## Overview
 Dark patterns are design choices in interfaces that trick users into doing things they didn't mean to do, like paying hidden fees, accepting cookie-tracking, or subscribing to services they never opted into. This extension silently scans every page you visit, visually highlights and tooltips these patterns, and generates a manipulation score and downloadable CCPA India 2023 compliance report.
