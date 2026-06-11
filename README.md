@@ -1,18 +1,15 @@
 # Dark Pattern Detector
 A Chrome extension that detects dark patterns, manipulative UI design, on Indian e-commerce websites in real-time. Built from scratch using vanilla JavaScript, Chrome Extension APIs (Manifest V3), and a rule-based NLP classifier trained on Princeton's labelled dark pattern dataset.
-<!--
-Source - https://stackoverflow.com/q/11804820
-Posted by Tyler Rinker, modified by community. See post 'Timeline' for change history
-Retrieved 2026-06-12, License - CC BY-SA 4.0
--->
 
-<object width="425" height="350">
-  <param name="movie" value="http://www.youtube.com/user/wwwLoveWatercom?v=BTRN1YETpyg" />
-  <param name="wmode" value="transparent" />
-  <embed src="http://www.youtube.com/user/wwwLoveWatercom?v=BTRN1YETpyg"
-         type="application/x-shockwave-flash"
-         wmode="transparent" width="425" height="350" />
-</object>
+## 🎥 Demo Video
+
+<div align="center">
+  <a href="https://youtu.be">
+    <img src="https://youtube.com" alt="Lumen Demo Video" style="width:100%; max-width:600px;">
+  </a>
+  <p><em>📺 Click the image above to watch the full project demo on YouTube!</em></p>
+</div>
+
 
 
 ## Overview
